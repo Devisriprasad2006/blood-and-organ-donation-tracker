@@ -1,0 +1,394 @@
+// =============================================================================
+// LifeLink: Digital Blood & Organ Donation Management and Tracking System
+// Platform: LifeLink Central Healthcare Grid Database Schema
+// Features: Centralized DB, AI Compatibility Matching, GPS Transit Tracking,
+// Emergency SOS Broadcast, Audit Transparency, and Multi-Role Healthcare Access
+// =============================================================================
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// -----------------------------------------------------------------------------
+// Enums
+// -----------------------------------------------------------------------------
+
+enum UserRole {
+  DONOR
+  RECIPIENT
+  HOSPITAL_ADMIN
+  BLOOD_BANK_ADMIN
+  SYSTEM_ADMIN
+}
+
+enum BloodGroup {
+  A_POS
+  A_NEG
+  B_POS
+  B_NEG
+  AB_POS
+  AB_NEG
+  O_POS
+  O_NEG
+}
+
+enum BloodComponentType {
+  WHOLE_BLOOD
+  PACKED_RED_CELLS
+  PLATELETS
+  FRESH_FROZEN_PLASMA
+  CRYOPRECIPITATE
+}
+
+enum OrganType {
+  KIDNEY
+  LIVER
+  HEART
+  LUNG
+  PANCREAS
+  CORNEA
+}
+
+enum OrganStatus {
+  PLEDGED
+  RETRIEVED
+  PRESERVED_COLD_STORAGE
+  IN_TRANSIT
+  ALLOCATED
+  TRANSPLANTED
+  DECLINED_OR_EXPIRED
+}
+
+enum RequestUrgency {
+  CRITICAL_SOS    // Immediate threat to life (< 2 hours)
+  URGENT          // Immediate scheduling (< 6 hours)
+  HIGH            // Standard hospital emergency (< 24 hours)
+  ROUTINE         // Scheduled elective surgery
+}
+
+enum RequestStatus {
+  PENDING
+  BROADCASTED
+  DONOR_MATCHED
+  ACCEPTED_BY_DONOR
+  IN_TRANSIT
+  FULFILLED
+  EXPIRED
+  CANCELLED
+}
+
+enum HospitalType {
+  GOVERNMENT_MEDICAL_COLLEGE
+  PRIVATE_MULTISPECIALTY
+  ORGAN_TRANSPLANT_CENTRE
+  REGIONAL_BLOOD_BANK
+}
+
+enum NotificationChannel {
+  IN_APP_PUSH
+  SMS_GATEWAY
+  EMAIL_DISPATCH
+  EMERGENCY_SIREN_WEB
+}
+
+// -----------------------------------------------------------------------------
+// 1. User & Authentication Profile
+// -----------------------------------------------------------------------------
+model User {
+  id                    String              @id @default(uuid())
+  email                 String              @unique
+  passwordHash          String
+  fullName              String
+  phone                 String              @unique
+  role                  UserRole            @default(DONOR)
+  avatarUrl             String?
+  bloodGroup            BloodGroup?
+  city                  String
+  state                 String              @default("Tamil Nadu")
+  country               String              @default("India")
+  latitude              Float?
+  longitude             Float?
+  
+  // Organ donor pledge metadata
+  isOrganDonorPledged   Boolean             @default(false)
+  pledgedOrgans         OrganType[]         @default([])
+  donorCardNumber       String?             @unique
+  emergencyContactName  String?
+  emergencyContactPhone String?
+  
+  // Availability & Donation Frequency
+  isAvailableForDonation Boolean            @default(true)
+  lastDonatedBloodAt    DateTime?
+  medicalClearanceValid Boolean             @default(true)
+  allergiesOrConditions String?
+  
+  // Relations
+  hospitalId            String?
+  hospital              Hospital?           @relation(fields: [hospitalId], references: [id], onDelete: SetNull)
+  bloodBankId           String?
+  bloodBank             BloodBank?          @relation(fields: [bloodBankId], references: [id], onDelete: SetNull)
+  
+  organDonations        OrganDonationRecord[] @relation("DonorOrgans")
+  receivedOrgans        OrganDonationRecord[] @relation("RecipientOrgans")
+  emergencyRequests     EmergencyRequest[]    @relation("CreatedRequests")
+  matchedRequests       EmergencyRequest[]    @relation("AssignedDonor")
+  notifications         Notification[]
+  auditLogs             AuditLog[]
+
+  // Audit Footprint
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+  deletedAt             DateTime?
+
+  @@index([role, bloodGroup, city])
+  @@index([latitude, longitude])
+  @@map("users")
+}
+
+// -----------------------------------------------------------------------------
+// 2. Hospital & Medical Centres
+// -----------------------------------------------------------------------------
+model Hospital {
+  id                    String              @id @default(uuid())
+  name                  String
+  licenseNumber         String              @unique
+  type                  HospitalType        @default(PRIVATE_MULTISPECIALTY)
+  address               String
+  city                  String
+  state                 String              @default("Tamil Nadu")
+  pincode               String
+  latitude              Float
+  longitude             Float
+  contactPhone          String
+  emergencyHelpline     String
+  email                 String
+  totalIcuBeds          Int                 @default(50)
+  availableIcuBeds      Int                 @default(12)
+  transplantOperatingRooms Int              @default(4)
+  isActive              Boolean             @default(true)
+
+  // Relations
+  affiliatedStaff       User[]
+  bloodBanks            BloodBank[]
+  emergencyRequests     EmergencyRequest[]
+  sourceOrganRecords    OrganDonationRecord[] @relation("SourceHospital")
+  destOrganRecords      OrganDonationRecord[] @relation("DestinationHospital")
+
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+
+  @@index([city, type])
+  @@map("hospitals")
+}
+
+// -----------------------------------------------------------------------------
+// 3. Blood Banks & Storage Facilities
+// -----------------------------------------------------------------------------
+model BloodBank {
+  id                    String              @id @default(uuid())
+  name                  String
+  licenseNumber         String              @unique
+  hospitalId            String?
+  hospital              Hospital?           @relation(fields: [hospitalId], references: [id], onDelete: Cascade)
+  address               String
+  city                  String
+  latitude              Float
+  longitude             Float
+  contactPhone          String
+  operatingHours        String              @default("24/7 Emergency Dispatch")
+
+  // Inventory & Relations
+  inventory             BloodInventory[]
+  staff                 User[]
+
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+
+  @@index([city])
+  @@map("blood_banks")
+}
+
+// -----------------------------------------------------------------------------
+// 4. Blood Stock & Unit Inventory
+// -----------------------------------------------------------------------------
+model BloodInventory {
+  id                    String              @id @default(uuid())
+  bloodBankId           String
+  bloodBank             BloodBank           @relation(fields: [bloodBankId], references: [id], onDelete: Cascade)
+  bloodGroup            BloodGroup
+  componentType         BloodComponentType  @default(WHOLE_BLOOD)
+  unitsAvailable        Int                 @default(0)
+  unitsReserved         Int                 @default(0)
+  batchNumber           String
+  testedNegativeHivHb   Boolean             @default(true)
+  collectedDate         DateTime            @default(now())
+  expiryDate            DateTime
+  storageRackIdentifier String
+
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+
+  @@unique([bloodBankId, bloodGroup, componentType, batchNumber])
+  @@index([bloodGroup, componentType, unitsAvailable])
+  @@map("blood_inventories")
+}
+
+// -----------------------------------------------------------------------------
+// 5. Organ Donation Lifecycle & Live GPS Tracking
+// -----------------------------------------------------------------------------
+model OrganDonationRecord {
+  id                    String              @id @default(uuid())
+  organType             OrganType
+  bloodGroup            BloodGroup
+  donorId               String
+  donor                 User                @relation("DonorOrgans", fields: [donorId], references: [id])
+  recipientId           String?
+  recipient             User?               @relation("RecipientOrgans", fields: [recipientId], references: [id])
+  
+  sourceHospitalId      String
+  sourceHospital        Hospital            @relation("SourceHospital", fields: [sourceHospitalId], references: [id])
+  destinationHospitalId String?
+  destinationHospital   Hospital?           @relation("DestinationHospital", fields: [destinationHospitalId], references: [id])
+
+  status                OrganStatus         @default(PLEDGED)
+  
+  // Organ Viability (Cold Ischemia Time Window)
+  maxColdIschemiaHours  Float               // Heart: 4-6h, Liver: 8-12h, Kidney: 24-36h
+  harvestedAt           DateTime?
+  coldIschemiaExpiresAt DateTime?
+  
+  // Real-Time IoT / GPS Transit Tracking
+  currentLatitude       Float?
+  currentLongitude      Float?
+  transitSpeedKmH       Float?              @default(65.0)
+  temperatureCelsius    Float?              @default(4.0) // Organ preservation temperature: 2-4 deg C
+  carrierVehicleType    String?             @default("Ambulance Green Corridor / Air Ambulance")
+  transporterContact    String?
+
+  // Medical matching criteria
+  hlaTypingA            String?
+  hlaTypingB            String?
+  hlaTypingDr           String?
+  donorAge              Int?
+  crossmatchResult      String?             @default("Negative")
+
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+
+  @@index([organType, bloodGroup, status])
+  @@map("organ_donation_records")
+}
+
+// -----------------------------------------------------------------------------
+// 6. Emergency Requests (SOS Broadcast Engine)
+// -----------------------------------------------------------------------------
+model EmergencyRequest {
+  id                    String              @id @default(uuid())
+  requesterId           String
+  requester             User                @relation("CreatedRequests", fields: [requesterId], references: [id])
+  hospitalId            String
+  hospital              Hospital            @relation(fields: [hospitalId], references: [id])
+  
+  requestType           String              // "BLOOD" or "ORGAN"
+  bloodGroup            BloodGroup?
+  bloodComponent        BloodComponentType?
+  unitsNeeded           Int                 @default(1)
+  organType             OrganType?
+  
+  urgency               RequestUrgency      @default(CRITICAL_SOS)
+  status                RequestStatus       @default(PENDING)
+  
+  patientName           String
+  patientAge            Int
+  medicalDiagnosis      String
+  doctorInCharge        String
+  contactNumber         String
+  
+  // Location & Broadcast Radius
+  hospitalLatitude      Float
+  hospitalLongitude     Float
+  broadcastRadiusKm     Float               @default(25.0)
+  
+  // Assigned Donor
+  assignedDonorId       String?
+  assignedDonor         User?               @relation("AssignedDonor", fields: [assignedDonorId], references: [id])
+  fulfilledAt           DateTime?
+  
+  // AI Matching History
+  aiMatchLogs           AiMatchLog[]
+
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+
+  @@index([requestType, urgency, status])
+  @@map("emergency_requests")
+}
+
+// -----------------------------------------------------------------------------
+// 7. AI Matching & Ranking Engine Logs
+// -----------------------------------------------------------------------------
+model AiMatchLog {
+  id                    String              @id @default(uuid())
+  requestId             String
+  emergencyRequest      EmergencyRequest    @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  candidateUserId       String
+  compatibilityScore    Float               // 0.0 to 100.0%
+  distanceKm            Float
+  bloodCompatibility    Boolean             @default(true)
+  hlaScore              Float?              // For organs
+  urgencyMultiplier     Float               @default(1.0)
+  rankPosition          Int
+  isNotified            Boolean             @default(false)
+  donorResponse         String?             // "ACCEPTED", "DECLINED", "NO_REPLY"
+
+  createdAt             DateTime            @default(now())
+
+  @@index([requestId, rankPosition])
+  @@map("ai_match_logs")
+}
+
+// -----------------------------------------------------------------------------
+// 8. Notifications & Alerts
+// -----------------------------------------------------------------------------
+model Notification {
+  id                    String              @id @default(uuid())
+  userId                String
+  user                  User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title                 String
+  message               String
+  type                  String              // "EMERGENCY_SOS", "MATCH_FOUND", "TRANSIT_UPDATE"
+  channel               NotificationChannel @default(IN_APP_PUSH)
+  isRead                Boolean             @default(false)
+  actionUrl             String?
+
+  createdAt             DateTime            @default(now())
+
+  @@index([userId, isRead])
+  @@map("notifications")
+}
+
+// -----------------------------------------------------------------------------
+// 9. Audit Logs & Compliance Footprint
+// -----------------------------------------------------------------------------
+model AuditLog {
+  id                    String              @id @default(uuid())
+  userId                String?
+  user                  User?               @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action                String              // "CREATE_REQUEST", "ALLOCATE_ORGAN", "LOGIN"
+  entityType            String              // "ORGAN", "BLOOD", "USER"
+  entityId              String
+  ipAddress             String?
+  metaData              Json?
+
+  createdAt             DateTime            @default(now())
+
+  @@index([entityType, entityId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}

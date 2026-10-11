@@ -1,0 +1,367 @@
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+<meta charset="utf-8">
+<title>LifeLink: Digital Blood & Organ Donation Management and Tracking System</title>
+<!--[if gte mso 9]>
+<xml>
+ <w:WordDocument>
+  <w:View>Print</w:View>
+  <w:Zoom>100</w:Zoom>
+  <w:DoNotOptimizeForBrowser/>
+ </w:WordDocument>
+</xml>
+<![endif]-->
+<style>
+body {
+  font-family: 'Calibri', 'Segoe UI', Arial, sans-serif;
+  font-size: 11pt;
+  line-height: 1.5;
+  color: #1e293b;
+  margin: 1.2in;
+}
+h1 {
+  font-size: 26pt;
+  color: #0d5c75;
+  text-align: center;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+.subtitle {
+  font-size: 13pt;
+  color: #64748b;
+  text-align: center;
+  font-style: italic;
+  margin-top: 0;
+  margin-bottom: 24px;
+}
+.tagline {
+  text-align: center;
+  font-size: 10pt;
+  color: #0f766e;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 30px;
+}
+h2 {
+  font-size: 16pt;
+  color: #0d5c75;
+  border-bottom: 2px solid #0d5c75;
+  padding-bottom: 4px;
+  margin-top: 28px;
+  margin-bottom: 12px;
+}
+h3 {
+  font-size: 12pt;
+  color: #1e293b;
+  margin-top: 18px;
+  margin-bottom: 8px;
+}
+p {
+  margin-bottom: 10px;
+  text-align: justify;
+}
+.callout {
+  background-color: #f0fdfa;
+  border-left: 5px solid #0d5c75;
+  padding: 14px 18px;
+  margin: 18px 0;
+  border-radius: 4px;
+}
+.callout-title {
+  font-weight: bold;
+  color: #0d5c75;
+  font-size: 11pt;
+  margin-bottom: 4px;
+}
+.callout-body {
+  font-size: 10pt;
+  color: #134e4a;
+  margin: 0;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 10pt;
+}
+th {
+  background-color: #0d5c75;
+  color: #ffffff;
+  font-weight: bold;
+  padding: 8px 12px;
+  text-align: left;
+  border: 1px solid #cbd5e1;
+}
+td {
+  padding: 8px 12px;
+  border: 1px solid #e2e8f0;
+  vertical-align: top;
+}
+tr:nth-child(even) td {
+  background-color: #f8fafc;
+}
+ul, ol {
+  margin-top: 4px;
+  margin-bottom: 12px;
+  padding-left: 24px;
+}
+li {
+  margin-bottom: 6px;
+}
+.badge {
+  display: inline-block;
+  padding: 2px 6px;
+  font-size: 9pt;
+  font-weight: bold;
+  background-color: #e2e8f0;
+  border-radius: 3px;
+  color: #334155;
+}
+.footer {
+  margin-top: 40px;
+  border-top: 1px solid #cbd5e1;
+  padding-top: 12px;
+  font-size: 9pt;
+  color: #94a3b8;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<h1>LifeLink Healthcare Grid</h1>
+<div class="subtitle">Digital Blood and Organ Donation Management and Tracking System</div>
+<div class="tagline">Comprehensive Technical Architecture, Clinical Workflows & Operational Specification</div>
+
+<div class="callout">
+  <div class="callout-title">Statutory Regulatory Notice (THOA 1994 & NOTTO Protocol Compliance)</div>
+  <div class="callout-body">
+    LifeLink is an independent healthcare technology platform engineered to facilitate real-time discovery and inventory tracking. In strict compliance with national hemovigilance and anatomical gift frameworks (Transplantation of Human Organs Act & National Organ and Tissue Transplant Organisation), final clinical compatibility cross-matching, blood safety screening, and organ transplant authorizations must be executed by certified medical personnel and statutory authorities.
+  </div>
+</div>
+
+<h2>1. Executive Summary & Clinical Problem Space</h2>
+<p>
+In emergency trauma medicine and critical healthcare coordination, minutes and seconds dictate patient survival. Severe vehicular collisions, obstetric hemorrhages, and complex oncological surgeries face recurrent shortages of compatible blood components (Packed RBC, Platelets, and Fresh Frozen Plasma). Delayed donor matching, manual registry logs, and lack of real-time inventory visibility lead to preventable morbidity and mortality.
+</p>
+<p>
+Simultaneously, thousands of patients with end-stage organ failure remain on extended waitlists. Navigating voluntary anatomical gifts requires rigorous ethical counseling, transparent next-of-kin documentation, and strict adherence to statutory protocols to prevent unethical allocation.
+</p>
+<p>
+<strong>LifeLink</strong> bridges these critical gaps through an engineered dual-track platform:
+</p>
+<ul>
+  <li><strong>Track 1 - Real-Time Blood Allocation Mesh:</strong> High-speed, explainable rule-based ABO/Rh clinical compatibility matching, privacy-preserving geospatial donor discovery, and concurrency-locked cold-chain blood bank inventory tracking.</li>
+  <li><strong>Track 2 - Statutory Organ Donation Coordination Desk:</strong> A dedicated governance module strictly decoupled from commercial blood matching, enforcing non-negotiable verification gates, next-of-kin (NOK) counseling acknowledgments, and immutable cryptographic audit ledgers.</li>
+</ul>
+
+<h2>2. System Architecture & Technology Stack</h2>
+<p>The platform is engineered using modern, production-grade technologies across all tiers:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>System Tier</th>
+      <th>Technology Selected</th>
+      <th>Architectural Purpose</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Frontend Client</strong></td>
+      <td>React 19, TypeScript, Vite</td>
+      <td>High-performance Single Page Application (SPA) with sub-second compilation and strict type safety.</td>
+    </tr>
+    <tr>
+      <td><strong>Styling & Design System</strong></td>
+      <td>Vanilla CSS, Tailwind CSS</td>
+      <td>Curated healthcare aesthetics: Deep Teal (<code>#0D5C75</code>), Emerald (<code>#10B981</code>), Amber, and Crimson SOS alerts.</td>
+    </tr>
+    <tr>
+      <td><strong>Real-Time Streaming</strong></td>
+      <td>Socket.IO WebSockets</td>
+      <td>Sub-millisecond broadcast of Emergency SOS alerts, rack reservations, and live status updates.</td>
+    </tr>
+    <tr>
+      <td><strong>Audio Synthesizer</strong></td>
+      <td>Web Audio API</td>
+      <td>Browser-native ambulance siren audio synthesizer without external MP3 asset dependencies.</td>
+    </tr>
+    <tr>
+      <td><strong>Data Visualization</strong></td>
+      <td>Recharts</td>
+      <td>Clinical inventory burn rates, donor supply curves, and blood group distribution analytics.</td>
+    </tr>
+    <tr>
+      <td><strong>Backend REST API</strong></td>
+      <td>Node.js, Express.js (<code>/api/v1</code>)</td>
+      <td>Modular RESTful architecture with Helmet, CORS, and Express-Rate-Limit security middlewares.</td>
+    </tr>
+    <tr>
+      <td><strong>Authentication & RBAC</strong></td>
+      <td>Stateless JWT, Bcrypt</td>
+      <td>Role-Based Access Control enforcing discrete authorization across 6 healthcare personas.</td>
+    </tr>
+    <tr>
+      <td><strong>Persistence Tier</strong></td>
+      <td>MySQL 8.0 & ACID Relational Adapter</td>
+      <td>Relational schema with ACID transactions, foreign keys, automated migrations, and zero downtime.</td>
+    </tr>
+    <tr>
+      <td><strong>Audit Ledger</strong></td>
+      <td>SHA-256 Hash Chaining</td>
+      <td>Cryptographically verifiable, tamper-evident ledger for sensitive healthcare actions.</td>
+    </tr>
+    <tr>
+      <td><strong>Background Scheduler</strong></td>
+      <td>Node.js Scheduler Interval</td>
+      <td>Automated cold-chain blood expiration monitoring and low-stock reserve quarantining.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>3. Healthcare Personas & Role-Based Workspaces</h2>
+<p>LifeLink enforces strict Role-Based Access Control (RBAC) so each persona operates within a customized clinical workspace:</p>
+
+<h3>3.1 Voluntary Citizen Donor (<code>DONOR</code>)</h3>
+<ul>
+  <li><strong>Digital Donor Card:</strong> Displays verified blood type, donor ID, registration status, and lifetime donation counter.</li>
+  <li><strong>Emergency Blood Appeals:</strong> Real-time regional feed of hospital trauma SOS calls with live distance metrics.</li>
+  <li><strong>Eligibility Countdown:</strong> Enforces medical cooldown intervals (90 days for Whole Blood, 14 days for Platelets).</li>
+  <li><strong>Anatomical Gift Pledge:</strong> Voluntary expression of intent for organ donation (Kidney, Liver, Heart, Lung, Pancreas, Cornea).</li>
+  <li><strong>Consent & Privacy Governance:</strong> Granular visibility settings and statutory 1-click consent withdrawal.</li>
+</ul>
+
+<h3>3.2 Patient & Family Requester (<code>RECIPIENT</code>)</h3>
+<ul>
+  <li><strong>Requisition Submission:</strong> Immediate creation of emergency or scheduled blood requisitions.</li>
+  <li><strong>Transparent Status Pipeline:</strong> Real-time progression across <em>Submitted &rarr; Matching &rarr; Donor Contacted &rarr; Fulfilled</em>.</li>
+  <li><strong>Cold-Chain Discovery:</strong> Direct discovery of accredited regional blood banks stocking the required blood component.</li>
+</ul>
+
+<h3>3.3 Hospital Surgical & Trauma Center (<code>HOSPITAL</code>)</h3>
+<ul>
+  <li><strong>Trauma ICU Command Desk:</strong> Central operational dashboard for emergency patient intake and triage.</li>
+  <li><strong>Trauma SOS Dispatcher:</strong> High-priority broadcast trigger with synchronized sirens and perimeter candidate radius targeting.</li>
+  <li><strong>Clinical Donor Crossmatch:</strong> Automated ABO/Rh rules engine discovering verified donors within geographic proximity.</li>
+  <li><strong>Blood Bank Unit Reservations:</strong> Concurrency-locked reservation leases preventing duplicate unit allocation.</li>
+  <li><strong>Organ Transplant Referrals:</strong> Clinical nomination of surgical transplant candidates into the NOTTO coordination registry.</li>
+</ul>
+
+<h3>3.4 Regional Blood Bank Authority (<code>BLOOD_BANK</code>)</h3>
+<ul>
+  <li><strong>Cold-Chain Inventory Matrix:</strong> Multi-component management across Packed RBC, Whole Blood, Platelets, FFP, and Cryoprecipitate.</li>
+  <li><strong>Storage Rack & Batch Control:</strong> Precise cold-chain rack indexing, batch barcoding, collection dates, and expiration countdowns.</li>
+  <li><strong>Atomic Stock Intake & Reservation Locks:</strong> Concurrency protection preventing negative stock balances or overselling.</li>
+  <li><strong>Automatic Quarantine Alerts:</strong> Instant flagging of expired batches and low safety reserve thresholds.</li>
+</ul>
+
+<h3>3.5 Organ Transplant Coordinator (<code>COORDINATOR</code>)</h3>
+<ul>
+  <li><strong>Ethical Coordination Hub:</strong> Statutory desk operating under THOA 1994 and NOTTO regulatory mandates.</li>
+  <li><strong>Expression of Intent Verification:</strong> Review of voluntary pledges and mandatory next-of-kin counseling documentation.</li>
+  <li><strong>Transplant Waitlist Registry:</strong> Non-commercial medical prioritization of end-stage recipient waitlists.</li>
+  <li><strong>Authorized Review Gates:</strong> Formal multi-party approval checkpoints required before any organ retrieval protocol.</li>
+</ul>
+
+<h3>3.6 System Health Grid Administrator (<code>ADMINISTRATOR</code>)</h3>
+<ul>
+  <li><strong>Executive Telemetry:</strong> Regional overview of verified donors, critical blood shortages, and hospital operations.</li>
+  <li><strong>Cryptographic SHA-256 Audit Ledger:</strong> Immutable record of every sensitive clinical operation signed with hash chains.</li>
+  <li><strong>Facility Credentialing Queue:</strong> Verification of medical licenses, hospital accreditations, and blood bank licenses.</li>
+</ul>
+
+<h2>4. Clinical Algorithms & Workflows</h2>
+
+<h3>4.1 Explainable ABO/Rh Compatibility Engine</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Patient Blood Type</th>
+      <th>Compatible Packed RBC Donors</th>
+      <th>Compatible Platelet & Plasma Donors</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>O Negative (O-)</strong></td><td>O- (Universal RBC Donor)</td><td>O-, O+, A-, A+, B-, B+, AB-, AB+</td></tr>
+    <tr><td><strong>O Positive (O+)</strong></td><td>O-, O+</td><td>O+, A+, B+, AB+</td></tr>
+    <tr><td><strong>A Negative (A-)</strong></td><td>O-, A-</td><td>A-, A+, AB-, AB+</td></tr>
+    <tr><td><strong>A Positive (A+)</strong></td><td>O-, O+, A-, A+</td><td>A+, AB+</td></tr>
+    <tr><td><strong>B Negative (B-)</strong></td><td>O-, B-</td><td>B-, B+, AB-, AB+</td></tr>
+    <tr><td><strong>B Positive (B+)</strong></td><td>O-, O+, B-, B+</td><td>B+, AB+</td></tr>
+    <tr><td><strong>AB Negative (AB-)</strong></td><td>O-, A-, B-, AB-</td><td>AB-, AB+</td></tr>
+    <tr><td><strong>AB Positive (AB+)</strong></td><td>All Groups (Universal Recipient)</td><td>AB+ (Universal Plasma Donor)</td></tr>
+  </tbody>
+</table>
+
+<h3>4.2 Privacy-Preserving Geospatial Distance Decay</h3>
+<p>
+To prevent exposing private residential coordinates of voluntary donors, raw GPS coordinates are snapped to 1-kilometer grid centroids. The matching engine computes composite donor scores using distance decay:
+</p>
+<p>
+<code>Match Score = (ClinicalFit &times; 0.50) + (1.0 - DistanceKm / RadiusKm) &times; 0.30 + (DonorReliability &times; 0.20)</code>
+</p>
+
+<h3>4.3 Concurrency-Safe ACID Inventory Reservations</h3>
+<p>
+When multiple hospital trauma desks requisition units simultaneously, row-level database transactions verify that <code>units_available &ge; requested_units</code> before atomically decrementing available units and incrementing reserved units. This eliminates race conditions and overselling.
+</p>
+
+<h2>5. REST API Architecture (<code>/api/v1</code>)</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Method</th>
+      <th>Endpoint</th>
+      <th>Role Access</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>POST</td><td>/api/v1/auth/register</td><td>Public</td><td>Register new user under designated healthcare role.</td></tr>
+    <tr><td>POST</td><td>/api/v1/auth/login</td><td>Public</td><td>Authenticate and issue stateless JWT token.</td></tr>
+    <tr><td>GET</td><td>/api/v1/auth/me</td><td>Authenticated</td><td>Retrieve current profile and active permissions.</td></tr>
+    <tr><td>GET</td><td>/api/v1/blood-requests</td><td>All Roles</td><td>List filtered blood requisitions with status filters.</td></tr>
+    <tr><td>POST</td><td>/api/v1/blood-requests</td><td>Recipient / Hospital</td><td>Create emergency or scheduled blood requisition.</td></tr>
+    <tr><td>POST</td><td>/api/v1/blood-requests/sos</td><td>Hospital / Admin</td><td>Broadcast critical trauma SOS with live siren event.</td></tr>
+    <tr><td>PATCH</td><td>/api/v1/blood-requests/:id</td><td>Hospital / Bank</td><td>Update requisition status (Matching &rarr; Contacted &rarr; Fulfilled).</td></tr>
+    <tr><td>GET</td><td>/api/v1/inventory</td><td>All Roles</td><td>Query regional cold-chain stock levels and batch racks.</td></tr>
+    <tr><td>POST</td><td>/api/v1/inventory/reserve</td><td>Hospital / Bank</td><td>Execute concurrency-safe unit reservation.</td></tr>
+    <tr><td>GET</td><td>/api/v1/matching/candidates</td><td>Hospital / Admin</td><td>Discover ABO-compatible donors and available blood banks.</td></tr>
+    <tr><td>GET</td><td>/api/v1/organs/intents</td><td>Donor / Coord / Admin</td><td>Query statutory expressions of organ intent.</td></tr>
+    <tr><td>POST</td><td>/api/v1/organs/intents</td><td>Donor</td><td>Submit voluntary anatomical gift pledge under NOTTO.</td></tr>
+    <tr><td>PATCH</td><td>/api/v1/organs/intents/:id</td><td>Coordinator / Admin</td><td>Advance statutory review verification gate.</td></tr>
+    <tr><td>GET</td><td>/api/v1/audit/logs</td><td>Administrator</td><td>Inspect cryptographic SHA-256 audit ledger.</td></tr>
+    <tr><td>GET</td><td>/api/v1/health</td><td>Public</td><td>Check backend uptime and database connection status.</td></tr>
+  </tbody>
+</table>
+
+<h2>6. Operational Runbook & Verified Test Accounts</h2>
+<p><strong>1-Command Simultaneous Launch:</strong></p>
+<p><code>npm run dev:all</code> (or double-click <code>start.bat</code> / run <code>.\start.ps1</code>)</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Healthcare Role</th>
+      <th>Test Account Email</th>
+      <th>Default Password</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Voluntary Donor</td><td>donor@lifelink.org</td><td>password123</td></tr>
+    <tr><td>Patient / Requester</td><td>recipient@lifelink.org</td><td>password123</td></tr>
+    <tr><td>Hospital Trauma Head</td><td>hospital@metrogeneral.org</td><td>password123</td></tr>
+    <tr><td>Blood Bank Admin</td><td>bloodbank@citybank.org</td><td>password123</td></tr>
+    <tr><td>Transplant Coordinator</td><td>coordinator@organgrid.org</td><td>password123</td></tr>
+    <tr><td>System Administrator</td><td>admin@lifelink.org</td><td>password123</td></tr>
+  </tbody>
+</table>
+
+<div class="footer">
+  LifeLink Digital Blood and Organ Donation Management and Tracking System &bull; Production Architecture Specification &bull; Confidential & Proprietary Healthcare Technology
+</div>
+
+</body>
+</html>
