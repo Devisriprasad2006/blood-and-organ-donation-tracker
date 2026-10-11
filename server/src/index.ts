@@ -4,6 +4,9 @@
 // =============================================================================
 
 import http from 'http';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -17,12 +20,17 @@ import { startBackgroundScheduler, stopBackgroundScheduler } from './services/sc
 import apiV1Router from './routes/apiV1Router.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const distPath = path.resolve(__dirname, '../../dist');
+
 const app = express();
 const server = http.createServer(app);
 
 // 1. Security Headers & CORS
 app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' },
+  contentSecurityPolicy: false,
 }));
 
 app.use(cors({
@@ -64,16 +72,7 @@ app.use((req: Request, _res: Response, next: NextFunction) => {
   next();
 });
 
-// 5. Root & Health Check Endpoints
-app.get('/', (_req: Request, res: Response) => {
-  res.json({
-    service: 'Digital Blood and Organ Donation Management and Tracking System API',
-    version: '1.0.0',
-    documentation: '/api/v1/health',
-    status: 'ONLINE',
-  });
-});
-
+// 5. Health Check Endpoint
 app.get('/api/health', (_req: Request, res: Response) => {
   res.json({
     status: 'HEALTHY',
@@ -82,13 +81,32 @@ app.get('/api/health', (_req: Request, res: Response) => {
   });
 });
 
-// 6. Mount Versioned API under /api/v1
+// 6. Mount Versioned API under /api/v1 and /api
 app.use('/api/v1', apiV1Router);
-
-// Backwards compatibility alias for /api routes
 app.use('/api', apiV1Router);
 
-// 7. Global Error Handler
+// 7. Serve Built Frontend (Production SPA)
+if (fs.existsSync(distPath) && fs.existsSync(path.join(distPath, 'index.html'))) {
+  console.log(`[LifeLink] Serving client production assets from: ${distPath}`);
+  app.use(express.static(distPath));
+
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    if (req.method === 'GET' && !req.path.startsWith('/api') && !req.path.startsWith('/socket.io')) {
+      return res.sendFile(path.join(distPath, 'index.html'));
+    }
+    next();
+  });
+} else {
+  app.get('/', (_req: Request, res: Response) => {
+    res.json({
+      service: 'Digital Blood and Organ Donation Management and Tracking System API',
+      version: '1.0.0',
+      status: 'ONLINE',
+    });
+  });
+}
+
+// 8. Global Error Handler
 app.use(errorHandler);
 
 // 8. Socket.IO Initialization

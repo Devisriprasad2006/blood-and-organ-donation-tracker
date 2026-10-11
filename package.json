@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "dev:all": "concurrently -n \"SERVER,CLIENT\" -c \"cyan,magenta\" \"npm run server:watch\" \"npm run dev\"",
-    "start": "concurrently -n \"SERVER,CLIENT\" -c \"cyan,magenta\" \"npm run server:watch\" \"npm run dev\"",
+    "start": "tsx server/src/index.ts",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",

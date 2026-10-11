@@ -27,7 +27,11 @@ import {
   INITIAL_VERIFICATIONS 
 } from '../data/mockData';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api/v1';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (
+  typeof window !== 'undefined' && window.location.port !== '5173'
+    ? `${window.location.origin}/api/v1`
+    : 'http://localhost:5000/api/v1'
+);
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
