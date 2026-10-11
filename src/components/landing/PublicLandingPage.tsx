@@ -20,6 +20,7 @@ interface PublicLandingPageProps {
   onOpenSOSModal: () => void;
   onExploreClick: () => void;
   onHowItWorksClick?: () => void;
+  onOpenDonorWizard?: () => void;
 }
 
 export const PublicLandingPage = ({
@@ -28,6 +29,7 @@ export const PublicLandingPage = ({
   onOpenSOSModal,
   onExploreClick,
   onHowItWorksClick,
+  onOpenDonorWizard,
 }: PublicLandingPageProps) => {
 
   const rolePortals: {
@@ -144,7 +146,7 @@ export const PublicLandingPage = ({
           </button>
 
           <button
-            onClick={() => onSelectRoleRegister('DONOR')}
+            onClick={() => onOpenDonorWizard ? onOpenDonorWizard() : onSelectRoleRegister('DONOR')}
             className="px-4 py-1.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
           >
             <UserPlus className="w-3.5 h-3.5" />
@@ -185,7 +187,7 @@ export const PublicLandingPage = ({
           </button>
 
           <button
-            onClick={() => onSelectRoleRegister('DONOR')}
+            onClick={() => onOpenDonorWizard ? onOpenDonorWizard() : onSelectRoleRegister('DONOR')}
             className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2 hover:scale-102"
           >
             <Heart className="w-4 h-4 fill-white" />
@@ -269,7 +271,7 @@ export const PublicLandingPage = ({
                   </button>
 
                   <button
-                    onClick={() => onSelectRoleRegister(portal.role)}
+                    onClick={() => portal.role === 'DONOR' && onOpenDonorWizard ? onOpenDonorWizard() : onSelectRoleRegister(portal.role)}
                     className="py-2.5 px-3 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-1.5"
                   >
                     <UserPlus className="w-3.5 h-3.5" />

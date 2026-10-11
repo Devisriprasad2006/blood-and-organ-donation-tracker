@@ -110,7 +110,8 @@ export function App() {
   const [authMode, setAuthMode] = useState<'LOGIN' | 'REGISTER'>('LOGIN');
   const [toasts, setToasts] = useState<ToastNotification[]>([]);
 
-  const currentUser = DEMO_USERS[currentRole] || DEMO_USERS.DONOR;
+  const [activeUser, setActiveUser] = useState<any>(null);
+  const currentUser = activeUser || DEMO_USERS[currentRole] || DEMO_USERS.DONOR;
 
   const addToast = useCallback((title: string, message: string, type: 'success' | 'alert' | 'info' = 'info') => {
     const id = `toast-${Date.now()}-${Math.random()}`;
@@ -143,6 +144,7 @@ export function App() {
     } catch {
       // ignore
     }
+    setActiveUser(null);
     setActivePage('landing');
     addToast('Signed Out', 'You have been safely returned to the Public Portal.', 'info');
   }, [addToast]);
@@ -150,6 +152,44 @@ export function App() {
   const handleLoginSuccess = useCallback((role: UserRole, user?: any) => {
     setCurrentRole(role);
     setIsAuthModalOpen(false);
+    setIsRegisterModalOpen(false);
+
+    if (user) {
+      setActiveUser(user);
+      if (role === 'DONOR') {
+        const registeredDonor: DonorProfile = {
+          id: `dp-${user.id || Date.now()}`,
+          userId: user.id || `usr-${Date.now()}`,
+          user: {
+            id: user.id || `usr-${Date.now()}`,
+            fullName: user.fullName || 'Registered Donor',
+            email: user.email || 'donor@lifelink.org',
+            phone: user.phone || '+91 98401 23456',
+            role: 'DONOR',
+            city: user.city || 'Chennai',
+            region: user.region || 'Tamil Nadu',
+            approxLatitude: 13.0827,
+            approxLongitude: 80.2707,
+            isVerified: true,
+            createdAt: new Date().toISOString(),
+          },
+          bloodGroup: (user.bloodGroup || 'O+') as any,
+          donationType: user.donationType || 'BOTH',
+          isAvailable: true,
+          isMatchingPaused: false,
+          preferredContact: 'IN_APP',
+          totalDonationsCount: 0,
+          donorCardNumber: `LIFE-DON-${Math.floor(1000 + Math.random() * 9000)}`,
+          age: user.age || 25,
+          weightKg: user.weightKg || 65,
+          medicalSelfDeclarationAccepted: true,
+          consentWithdrawalAllowed: true,
+          locationPermissionGranted: true,
+          privacySetting: 'ANONYMOUS_TO_PUBLIC',
+        };
+        setDonors((prev) => [registeredDonor, ...prev]);
+      }
+    }
 
     // Route directly to the persona's customized workspace
     switch (role) {
@@ -174,6 +214,8 @@ export function App() {
       default:
         setActivePage('dashboard');
     }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 
     addToast(
       'Authenticated',
@@ -842,6 +884,11 @@ export function App() {
 
   const handleRegisterDonor = useCallback((newDonorProfile: DonorProfile) => {
     setDonors((prev) => [newDonorProfile, ...prev]);
+    setActiveUser(newDonorProfile.user);
+    setCurrentRole('DONOR');
+    setActivePage('dashboard');
+    setIsRegisterModalOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 
     handleAddAuditLog({
       actor: newDonorProfile.user.fullName,
@@ -1136,6 +1183,7 @@ export function App() {
               onOpenSOSModal={() => setIsSOSModalOpen(true)}
               onExploreClick={() => setActivePage('dashboard')}
               onHowItWorksClick={() => setActivePage('how-it-works')}
+              onOpenDonorWizard={() => setIsRegisterModalOpen(true)}
             />
           )}
 

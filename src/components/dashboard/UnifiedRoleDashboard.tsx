@@ -95,18 +95,20 @@ export const UnifiedRoleDashboard: React.FC<UnifiedRoleDashboardProps> = ({
           </div>
 
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-            {currentRole === 'DONOR' && 'Welcome back, Ananya!'}
+            {currentRole === 'DONOR' && `Welcome back, ${primaryDonor?.user?.fullName || 'Valued Donor'}!`}
             {currentRole === 'RECIPIENT' && 'Patient & Requester Portal'}
             {currentRole === 'HOSPITAL' && 'Hospital Trauma & Surgical Desk'}
             {currentRole === 'BLOOD_BANK' && 'Blood Bank Inventory Operations'}
+            {currentRole === 'COORDINATOR' && 'Organ Transplant Coordination Desk'}
             {currentRole === 'ADMINISTRATOR' && 'System Health & Governance Hub'}
           </h1>
 
           <p className="text-xs sm:text-sm text-teal-100/90 leading-relaxed">
-            {currentRole === 'DONOR' && 'Your voluntary donations have helped save 6 lives. Thank you for your commitment to community health.'}
+            {currentRole === 'DONOR' && `Your voluntary donor card #${primaryDonor?.donorCardNumber || 'LIFE-DON-001'} is verified and active in the healthcare grid.`}
             {currentRole === 'RECIPIENT' && 'Monitor verified blood requests, search compatible donors, and track status transitions in real time.'}
             {currentRole === 'HOSPITAL' && 'Create patient blood requirements, evaluate preliminary matching results, and coordinate authorized organ intents.'}
             {currentRole === 'BLOOD_BANK' && 'Maintain inventory integrity, process reservations, and manage low-stock and expiry warnings.'}
+            {currentRole === 'COORDINATOR' && 'Review expressions of anatomical gift intent, verify next-of-kin documentation, and coordinate authorized transplant allocations.'}
             {currentRole === 'ADMINISTRATOR' && 'Monitor network integrity, review facility license verifications, and audit critical allocations.'}
           </p>
         </div>
@@ -148,11 +150,11 @@ export const UnifiedRoleDashboard: React.FC<UnifiedRoleDashboardProps> = ({
               {currentRole === 'DONOR' ? (primaryDonor?.isAvailable ? 'Available' : 'Paused') : totalUnits}
             </span>
             <span className="text-xs font-semibold text-emerald-600">
-              {currentRole === 'DONOR' ? 'Card #LIFE-DON-001' : 'Ready in Storage'}
+              {currentRole === 'DONOR' ? `Card #${primaryDonor?.donorCardNumber || 'LIFE-DON-001'}` : 'Ready in Storage'}
             </span>
           </div>
           <p className="text-[11px] text-slate-500">
-            {currentRole === 'DONOR' ? 'O+ Blood Group • Organ Pledge Signed' : 'Across 4 registered blood banks'}
+            {currentRole === 'DONOR' ? `${primaryDonor?.bloodGroup || 'O+'} Blood Group • Voluntary Donor Active` : 'Across 4 registered blood banks'}
           </p>
         </div>
 
