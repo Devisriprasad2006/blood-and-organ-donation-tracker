@@ -52,11 +52,14 @@ export const BloodRequestManagement: React.FC<BloodRequestManagementProps> = ({
   const [clinicalDiagnosis, setClinicalDiagnosis] = useState('');
 
   const filteredRequests = requests.filter((r) => {
+    const patName = r.patientName || (r as any).patient_name || '';
+    const hospName = r.hospitalName || (r as any).hospital_name || '';
+    const reqId = r.id || '';
     const matchSearch = 
-      r.patientName.toLowerCase().includes(search.toLowerCase()) ||
-      r.hospitalName.toLowerCase().includes(search.toLowerCase()) ||
-      r.id.toLowerCase().includes(search.toLowerCase());
-    const matchGroup = filterGroup === 'ALL' || r.bloodGroup === filterGroup;
+      patName.toLowerCase().includes(search.toLowerCase()) ||
+      hospName.toLowerCase().includes(search.toLowerCase()) ||
+      reqId.toLowerCase().includes(search.toLowerCase());
+    const matchGroup = filterGroup === 'ALL' || (r.bloodGroup || (r as any).blood_group) === filterGroup;
     const matchUrgency = filterUrgency === 'ALL' || r.urgency === filterUrgency;
     const matchStatus = filterStatus === 'ALL' || r.status === filterStatus;
     return matchSearch && matchGroup && matchUrgency && matchStatus;
@@ -337,7 +340,7 @@ export const BloodRequestManagement: React.FC<BloodRequestManagementProps> = ({
                           ...selectedRequest,
                           status: st,
                           timeline: [
-                            ...selectedRequest.timeline,
+                            ...(selectedRequest.timeline || []),
                             { status: st, timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), note: `Transitioned to ${st}`, actor: currentRole }
                           ]
                         });
@@ -358,7 +361,7 @@ export const BloodRequestManagement: React.FC<BloodRequestManagementProps> = ({
               <div className="space-y-3">
                 <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider">Audited Action Timeline</h4>
                 <div className="space-y-3 relative before:absolute before:left-3 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200">
-                  {selectedRequest.timeline.map((item, idx) => (
+                  {(selectedRequest.timeline || []).map((item, idx) => (
                     <div key={idx} className="relative pl-8 text-xs space-y-0.5">
                       <div className="absolute left-1.5 top-1 w-3.5 h-3.5 rounded-full bg-teal-600 border-2 border-white" />
                       <div className="flex items-center gap-2">

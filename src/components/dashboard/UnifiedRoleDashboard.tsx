@@ -349,49 +349,59 @@ export const UnifiedRoleDashboard: React.FC<UnifiedRoleDashboardProps> = ({
         </div>
 
         <div className="divide-y divide-slate-100">
-          {bloodRequests.slice(0, 3).map((req) => (
-            <div key={req.id} className="py-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 hover:bg-slate-50/60 rounded-xl px-2 transition-colors">
-              <div className="flex items-start gap-3">
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-xs font-mono flex-shrink-0 ${
-                  req.urgency === 'CRITICAL_EMERGENCY' 
-                    ? 'bg-red-50 text-red-700 border border-red-200' 
-                    : req.urgency === 'URGENT'
-                    ? 'bg-amber-50 text-amber-700 border border-amber-200'
-                    : 'bg-teal-50 text-teal-700 border border-teal-200'
-                }`}>
-                  {req.bloodGroup}
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-xs text-slate-900">{req.patientName}</span>
-                    <span className={`px-2 py-0.2 rounded text-[10px] font-bold ${
-                      req.status === 'Fulfilled' 
-                        ? 'bg-emerald-50 text-emerald-700' 
-                        : req.status === 'Matching'
-                        ? 'bg-blue-50 text-blue-700'
-                        : 'bg-amber-50 text-amber-700'
-                    }`}>
-                      {req.status}
-                    </span>
-                    <span className="text-[10px] text-slate-400 font-mono">#{req.id}</span>
-                  </div>
-                  <p className="text-xs text-slate-500 mt-0.5">
-                    {req.hospitalName} • Needs <strong>{req.unitsRequired} units</strong> ({req.componentType})
-                  </p>
-                </div>
-              </div>
+          {bloodRequests.slice(0, 4).map((req: any) => {
+            const bloodGrp = req.bloodGroup || req.blood_group || 'O+';
+            const patName = req.patientName || req.patient_name || 'Emergency Patient';
+            const hospName = req.hospitalName || req.hospital_name || 'Trauma Center';
+            const units = req.unitsRequired ?? req.units_required ?? 1;
+            const comp = req.componentType || req.component_type || 'Packed RBC';
+            const rawTime = req.createdAt || req.created_at || '';
+            const timeStr = rawTime.includes('T') ? rawTime.slice(11, 16) : rawTime.includes(' ') ? rawTime.split(' ')[1]?.slice(0, 5) : (rawTime || 'Recently');
 
-              <div className="flex items-center gap-3 text-xs w-full sm:w-auto justify-between sm:justify-end">
-                <span className="text-[11px] text-slate-400">{req.createdAt.slice(11, 16)}</span>
-                <button
-                  onClick={() => onNavigate('blood-requests')}
-                  className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs"
-                >
-                  Track Details
-                </button>
+            return (
+              <div key={req.id} className="py-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 hover:bg-slate-50/60 rounded-xl px-2 transition-colors">
+                <div className="flex items-start gap-3">
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-xs font-mono flex-shrink-0 ${
+                    req.urgency === 'CRITICAL_EMERGENCY' 
+                      ? 'bg-red-50 text-red-700 border border-red-200' 
+                      : req.urgency === 'URGENT'
+                      ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                      : 'bg-teal-50 text-teal-700 border border-teal-200'
+                  }`}>
+                    {bloodGrp}
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-xs text-slate-900">{patName}</span>
+                      <span className={`px-2 py-0.2 rounded text-[10px] font-bold ${
+                        req.status === 'Fulfilled' 
+                          ? 'bg-emerald-50 text-emerald-700' 
+                          : req.status === 'Matching'
+                          ? 'bg-blue-50 text-blue-700'
+                          : 'bg-amber-50 text-amber-700'
+                      }`}>
+                        {req.status || 'Submitted'}
+                      </span>
+                      <span className="text-[10px] text-slate-400 font-mono">#{req.id}</span>
+                    </div>
+                    <p className="text-xs text-slate-500 mt-0.5">
+                      {hospName} • Needs <strong>{units} units</strong> ({comp})
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 text-xs w-full sm:w-auto justify-between sm:justify-end">
+                  <span className="text-[11px] text-slate-400">{timeStr}</span>
+                  <button
+                    onClick={() => onNavigate('blood-requests')}
+                    className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs"
+                  >
+                    Track Details
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 

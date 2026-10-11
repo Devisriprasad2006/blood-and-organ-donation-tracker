@@ -19,6 +19,7 @@ import { EmergencyAlerts } from './components/emergency/EmergencyAlerts';
 import { EmergencySOSModal } from './components/emergency/EmergencySOSModal';
 import { MultiStepDonorRegistrationModal } from './components/auth/MultiStepDonorRegistrationModal';
 import { AuthModal } from './components/auth/AuthModal';
+import { ErrorBoundary } from './components/common/ErrorBoundary';
 
 import { 
   DEMO_USERS,
@@ -265,7 +266,44 @@ export function App() {
         ]);
 
         if (reqRes.status === 'fulfilled' && reqRes.value?.requests?.length) {
-          setBloodRequests(reqRes.value.requests);
+          setBloodRequests(reqRes.value.requests.map((r: any) => ({
+            id: r.id,
+            requesterId: r.requester_id || r.requesterId || 'user-1',
+            requesterName: r.requester_name || r.requesterName || 'Hospital Coordination Desk',
+            requesterRole: r.requester_role || r.requesterRole || 'HOSPITAL',
+            patientName: r.patient_name || r.patientName || 'Emergency Patient',
+            patientAge: Number(r.patient_age ?? r.patientAge ?? 35),
+            hospitalName: r.hospital_name || r.hospitalName || 'Trauma Center',
+            hospitalCity: r.hospital_city || r.hospitalCity || 'Chennai',
+            hospitalLatitude: Number(r.hospital_latitude ?? r.hospitalLatitude ?? 13.0827),
+            hospitalLongitude: Number(r.hospital_longitude ?? r.hospitalLongitude ?? 80.2707),
+            doctorInCharge: r.doctor_in_charge || r.doctorInCharge || 'Duty Medical Officer',
+            contactPhone: r.contact_phone || r.contactPhone || '+91 98400 12345',
+            bloodGroup: r.blood_group || r.bloodGroup || 'O+',
+            componentType: r.component_type || r.componentType || 'Packed RBC',
+            unitsRequired: Number(r.units_required ?? r.unitsRequired ?? 1),
+            unitsAllocated: Number(r.units_allocated ?? r.unitsAllocated ?? 0),
+            urgency: r.urgency || 'URGENT',
+            status: r.status || 'Submitted',
+            requiredByDate: r.required_by_date || r.requiredByDate || new Date().toISOString(),
+            clinicalDiagnosis: r.clinical_diagnosis || r.clinicalDiagnosis || 'Critical care requirement',
+            createdAt: r.created_at || r.createdAt || new Date().toISOString(),
+            updatedAt: r.updated_at || r.updatedAt || new Date().toISOString(),
+            matchedDonorsCount: Number(r.matched_donors_count ?? r.matchedDonorsCount ?? 0),
+            timeline: Array.isArray(r.timeline) && r.timeline.length > 0 ? r.timeline.map((t: any) => ({
+              status: t.status,
+              timestamp: t.createdAt || t.timestamp || t.created_at || new Date().toISOString(),
+              note: t.note || '',
+              actor: t.actor || 'System'
+            })) : [
+              {
+                status: r.status || 'Submitted',
+                timestamp: r.created_at || r.createdAt || new Date().toISOString(),
+                note: 'Request logged into LifeLink system',
+                actor: r.doctor_in_charge || 'Hospital Coordination'
+              }
+            ]
+          })));
         }
         if (invRes.status === 'fulfilled' && invRes.value?.items?.length) {
           setInventory(invRes.value.items.map((i: any) => ({
@@ -568,7 +606,7 @@ export function App() {
             status: newStatus,
             updatedAt: new Date().toISOString(),
             timeline: [
-              ...r.timeline,
+              ...(r.timeline || []),
               {
                 status: newStatus,
                 timestamp: new Date().toISOString().slice(0, 16),
@@ -1014,6 +1052,7 @@ export function App() {
 
         {/* Dynamic Page Views */}
         <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-12">
+          <ErrorBoundary>
           
           {/* Dashboard View */}
           {activePage === 'dashboard' && (
@@ -1192,6 +1231,7 @@ export function App() {
             <HowItWorksView />
           )}
 
+          </ErrorBoundary>
         </main>
 
         {/* Production Footer */}

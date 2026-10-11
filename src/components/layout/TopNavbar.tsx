@@ -135,10 +135,10 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
               </div>
 
               <div className="max-h-72 overflow-y-auto divide-y divide-slate-100">
-                {notifications.length === 0 ? (
+                {(!notifications || notifications.length === 0) ? (
                   <div className="p-4 text-center text-slate-400">No notifications</div>
                 ) : (
-                  notifications.slice(0, 4).map((n) => (
+                  (notifications || []).slice(0, 4).map((n) => (
                     <div 
                       key={n.id} 
                       className={`p-3.5 hover:bg-slate-50 transition-colors cursor-pointer ${!n.isRead ? 'bg-teal-50/40' : ''}`}

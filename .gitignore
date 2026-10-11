@@ -24,9 +24,13 @@ dist-ssr
 
 # Databases & local data
 server/data/*.db
+server/data/*.db-wal
+server/data/*.db-shm
 server/data/*.sqlite
 server/data/*.sqlite3
 *.db
+*.db-wal
+*.db-shm
 *.sqlite
 
 # System & IDE

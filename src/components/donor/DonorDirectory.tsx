@@ -137,9 +137,10 @@ export const DonorDirectory: React.FC<DonorDirectoryProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {filteredDonors.map((donor) => {
           const isAvailable = donor.isAvailable && !donor.isMatchingPaused;
+          const rawPhone = donor.user?.phone || '+91 98401 23456';
           const displayPhone = isHospitalOrAdmin
-            ? donor.user.phone
-            : `${donor.user.phone.slice(0, 6)} •••• ${donor.user.phone.slice(-2)}`;
+            ? rawPhone
+            : `${rawPhone.slice(0, 6)} •••• ${rawPhone.slice(-2)}`;
 
           return (
             <div
